@@ -9,22 +9,22 @@ import Body from './body';
 class NewsArticles extends Component {
 
     state = {
-        article: [],
+        article:[],
         team:[]
     }
 
     componentWillMount(){
         axios.get(`${URL}/articles?id=${this.props.match.params.id}`)
-        .then( response =>{
-           let article = response.data[0];
+        .then( response => {
+            let article = response.data[0];
 
-           axios.get(`${URL}/teams?id=${article.team}`)
-           .then(response => {
-               this.setState({
-                   article,
-                   team:response.data
-               })
-           })
+            axios.get(`${URL}/teams?id=${article.team}`)
+            .then( response => {
+                this.setState({
+                    article,
+                    team:response.data
+                })
+            })
         })
     }
 
@@ -32,18 +32,27 @@ class NewsArticles extends Component {
     render(){
         const article = this.state.article;
         const team = this.state.team;
-        
+
         return(
             <div className={styles.articleWrapper}>
-                <Header 
+                <Header
                     teamData={team[0]}
                     date={article.date}
-                    article={article.author}
+                    author={article.author}
                 />
-                <Body/>
+                <div className={styles.articleBody}>
+                    <h1>{article.title}</h1>
+                    <div className={styles.articleImage}
+                        style={{
+                            background:`url('/images/articles/${article.image}')`
+                        }}
+                    ></div>
+                    <div className={styles.articleText}>
+                        {article.body}
+                    </div>
+                </div>
             </div>
         )
     }
 }
-
 export default NewsArticles;
